@@ -2,7 +2,7 @@ import os
 from launch import LaunchDescription
 from launch_ros.actions import Node
 from ament_index_python import get_package_share_directory
-from launch.actions import IncludeLaunchDescription
+from launch.actions import IncludeLaunchDescription, TimerAction
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 
 def generate_launch_description():
@@ -31,7 +31,14 @@ def generate_launch_description():
         arguments=["-topic","robot_description","-entity","ultron"]
     )
 
+    spawn_entity_delayed = TimerAction(
+        period=6.0,  # Adjust the delay time as necessary
+        actions=[spawn_entity]
+    )
+
     rsp_launch_file = os.path.join(pkg_share,"launch","rsp.launch.py")
     rsp_launch = IncludeLaunchDescription(rsp_launch_file)
 
-    return LaunchDescription([rsp_launch,rviz, gazebo_launch, spawn_entity])
+
+
+    return LaunchDescription([rsp_launch,rviz, gazebo_launch, spawn_entity_delayed])
